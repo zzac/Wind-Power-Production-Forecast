@@ -1,27 +1,38 @@
-# Wind Power Production Forecast - Belgium Offshore
+# Prédiction de la production d'énergie éolienne en mer
 
-## Contexte Métier
-Dans le cadre de la transition énergétique, les opérateurs éoliens offshore belges sont soumis à des obligations de prévision de production sur les marchés de l'énergie à court terme. 
+## Contexte du projet
+Dans le cadre de la transition énergétique, les opérateurs de parcs éoliens offshore belges sont soumis à des obligations de prévision de production sur les marchés de l'énergie à court terme. Pour optimiser leurs positions sur le marché "Day-Ahead", ils doivent soumettre des offres de production 24 heures à l'avance au gestionnaire de réseau Elia. Une mauvaise prévision génère des coûts d'équilibrage importants et dégrade la rentabilité des actifs.
 
-Pour optimiser leurs positions sur le marché Day-Ahead, ils doivent soumettre des offres de production 24 heures à l'avance au gestionnaire de réseau Elia. Une prévision erronée génère des coûts d'équilibrage importants et dégrade la rentabilité des actifs.
+Ce projet vise à développer des modèles avancés de prévision de la production d'énergie éolienne en mer, en exploitant les données de prévisions météorologiques et les relevés historiques de production d'un portefeuille de parcs éoliens.
 
-Ce projet, réalisé pour un opérateur énergétique belge par Wavestone, vise à développer des modèles de prévision avancés en exploitant les données météorologiques et les historiques de production.
+## Périmètre d'étude
+L'étude porte sur 10 parcs éoliens actifs en mer du Nord, situés à 20-50 km des côtes belges (Nobelwind, Rentel, Norther, Northwester 2, Mermaid, Seastar, Belwind, Northwind et Thorntonbank). Ces parcs représentent une capacité installée totale d'environ 2,3 GW.
 
-## Périmètre du Projet (Zone MOG)
-La Belgique exploite l'une des zones de concession éolienne offshore les plus denses d'Europe. Le projet se concentre sur les parcs connectés via le Modular Offshore Grid (MOG), situés entre 20 et 50 km des côtes :
+## Description des données
+Le projet s'appuie sur trois jeux de données principaux :
 
-* **Capacité totale :** Environ 2,3 GW.
-* **Sites concernés :** Nobelwind, Rentel, Norther, Northwester 2, Mermaid, Seastar, Belwind, Northwind et Thorntonbank.
-* **Conditions :** Tous les parcs sont situés dans un rayon de 30 km, ce qui implique des conditions météorologiques très similaires pour l'ensemble du portefeuille.
+### 1. Production (Dataset 1)
+* **Données** : Production éolienne offshore horaire.
+* **Période** : Du 31/12/2022 au 18/02/2026.
+* **Colonnes** : Nom du site, horodatage (UTC), production mesurée (MW), et capacité installée (MW).
 
-## Données
-Les analyses et modèles s'appuient sur le fichier `dataset.parquet` qui contient :
-* `site_name` : Nom de l'installation éolienne.
-* `delivery_timel` : Horodatage des données.
-* `production` : Puissance réelle produite (MW).
-* `installed_capacity` : Capacité installée au moment de la mesure.
+### 2. Localisation (Dataset 2)
+* **Données** : Coordonnées géographiques des 10 sites.
+* **Colonnes** : Nom du site, latitude (°N), longitude (°E).
 
-## Objectifs du Projet
-1.  **Analyse Exploratoire :** Étude des corrélations de production entre les différents parcs de la zone MOG.
-2.  **Modélisation :** Développement d'algorithmes de machine learning pour la prévision à J+1.
-3.  **Optimisation Financière :** Réduction de l'écart entre les prévisions et la production réelle pour limiter les coûts d'imbalance.
+### 3. Météo (Dataset 3)
+* **Source** : API Open-Meteo (Modèle ECMWF IFS HRES).
+* **Données** : Prévisions horaires incluant la vitesse du vent (10m et 100m), la direction du vent, les rafales, la température, la pression atmosphérique, et la couverture nuageuse.
+
+## Structure du projet
+* `dataset_1.parquet` : Historique de production.
+* `dataset_2.parquet` : Coordonnées des parcs.
+* `dataset_3.parquet` : Données météorologiques historiques et prévisions.
+* `consignes.pdf` : Cahier des charges et contexte métier.
+
+## Installation et Utilisation
+1. Assurez-vous de disposer d'un environnement Python avec les bibliothèques `pandas` et `pyarrow` pour la lecture des fichiers Parquet.
+2. Chargez les données via la commande :
+   ```python
+   import pandas as pd
+   df_prod = pd.read_parquet('dataset_1.parquet')
